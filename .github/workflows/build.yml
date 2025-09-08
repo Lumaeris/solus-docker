@@ -19,7 +19,7 @@ jobs:
 
     - name: Login to GitHub Container Registry
       run: |
-        echo $GITHUB_TOKEN | docker login ghcr.io -u Lumaeris --password-stdin
+        echo $GITHUB_TOKEN | docker login ghcr.io -u lumaeris --password-stdin
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -45,11 +45,6 @@ jobs:
         do
           docker tag ghcr.io/lumaeris/solus-base:latest ghcr.io/lumaeris/solus-base:$tag
         done
-
-    - name: Wait for other runs to complete
-      uses: softprops/turnstyle@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Push Base image
       run: docker push --all-tags ghcr.io/lumaeris/solus-base

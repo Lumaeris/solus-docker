@@ -42,7 +42,6 @@ jobs:
     - name: Tag image
       run: |
         for tag in \
-            "${{ steps.download.outputs.BUILD_ID }}" \
             "${{ steps.download.outputs.FULL_VERSION }}" \
             "${{ steps.download.outputs.MAJOR_VERSION }}"
         do

@@ -9,8 +9,8 @@ FILE="https://downloads.getsol.us/isos/2025-01-26/Solus-Budgie-Release-2025-01-2
     echo "Downloading image $FILE"
     curl $FILE -o ./solus.iso
     mkdir ./solus_{image,mnt,mntiso}
-    mount -o ro ./solus.iso ./solus_mntiso
-    mount -o ro ./solus_mntiso/LiveOS/squashfs.img ./solus_mnt
+    mount ./solus.iso ./solus_mntiso
+    mount ./solus_mntiso/LiveOS/squashfs.img ./solus_mnt
     cp ./solus_mnt/LiveOS/rootfs.img ./solus_image
     umount ./solus_mnt ./solus_mntiso
     rm -rf ./solus_mnt{,iso}

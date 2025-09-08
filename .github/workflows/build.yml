@@ -1,0 +1,58 @@
+name: Build Solus Docker image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Login to GitHub Container Registry
+      run: |
+        echo $GITHUB_TOKEN | docker login ghcr.io -u Lumaeris --password-stdin
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Download Solus
+      id: download
+      run: |
+        sudo ./download.sh >>$GITHUB_OUTPUT
+
+    - name: Build and tag base image
+      run: |
+        sudo ./build.sh
+
+    - name: Cleanup Solus image
+      run: rm -rf ./solus_image ./solus
+
+    - name: Tag image
+      run: |
+        for tag in \
+            "${{ steps.download.outputs.BUILD_ID }}" \
+            "${{ steps.download.outputs.FULL_VERSION }}" \
+            "${{ steps.download.outputs.MAJOR_VERSION }}"
+        do
+          docker tag ghcr.io/lumaeris/solus-base:latest ghcr.io/lumaeris/solus-base:$tag
+        done
+
+    - name: Wait for other runs to complete
+      uses: softprops/turnstyle@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push Base image
+      run: docker push --all-tags ghcr.io/lumaeris/solus-base
+
+    - name: Log out of GitHub Container Registry
+      run: |
+        docker logout ghcr.io

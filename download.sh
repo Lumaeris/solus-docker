@@ -21,6 +21,7 @@ FILE="https://downloads.getsol.us/isos/2025-01-26/Solus-Budgie-Release-2025-01-2
 } >&2
 
 # Output the downloaded version for github actions to tag the images
+echo "BUILD_TAG=2025-01-26"
 FULL_VERSION="4.7"
 echo "FULL_VERSION=${FULL_VERSION}"
 echo "MAJOR_VERSION=$(echo "$FULL_VERSION" | cut -d. -f 1)"
